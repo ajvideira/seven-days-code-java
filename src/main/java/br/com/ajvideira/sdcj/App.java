@@ -1,6 +1,10 @@
 package br.com.ajvideira.sdcj;
 
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.http.HttpClient;
@@ -27,8 +31,8 @@ public class App {
 
 		try {
 			HttpClient client = HttpClient.newHttpClient();
-			HttpRequest request = HttpRequest.newBuilder().uri(new URI(IMDB_API_URL + "/Top250Movies/" + apiKey)).GET()
-					.build();
+			HttpRequest request = HttpRequest.newBuilder()
+				.uri(new URI(IMDB_API_URL + "/Top250Movies/" + apiKey)).GET().build();
 
 			HttpResponse<String> response = client.send(request, BodyHandlers.ofString());
 
@@ -41,11 +45,17 @@ public class App {
 
 			List<Movie> movies = responseJson.getJSONArray("items").toList().stream().map(item -> {
 				Map<String, String> itemMap = (Map<String, String>) item;
-				return new Movie(itemMap.get("title"), itemMap.get("image"), itemMap.get("rating"),
+				return new Movie(itemMap.get("title"), itemMap.get("image"), itemMap.get("imDbRating"),
 						itemMap.get("year"));
 			}).collect(Collectors.toList());
 
-			movies.forEach(movie -> System.out.println(movie));
+			OutputStream outputStream = new FileOutputStream("index.html");
+			PrintWriter printWriter = new PrintWriter(new OutputStreamWriter(outputStream, "UTF-8"));
+
+			HtmlGenerator htmlGenerator = new HtmlGenerator(printWriter);
+			htmlGenerator.generate(movies);
+
+			printWriter.close();
 
 		} catch (URISyntaxException e) {
 			System.out.println("URL bad formatted.");
