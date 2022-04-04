@@ -1,6 +1,7 @@
 package br.com.ajvideira.sdcj;
 
 import java.io.IOException;
+
 import java.io.Writer;
 import java.lang.StringBuilder;
 import java.util.List;
@@ -12,7 +13,7 @@ public class HtmlGenerator {
     this.writer = writer;
   }
 
-  public void generate(List<Movie> movies ) throws IOException {
+  public void generate(List<Movie> movies ) throws HtmlGeneratorException {
     StringBuilder htmlBuilder = new StringBuilder();
     htmlBuilder.append("<!DOCTYPE html>\n");
     htmlBuilder.append("<html lang=\"en\">\n");
@@ -20,7 +21,11 @@ public class HtmlGenerator {
     htmlBuilder.append(getCardsFormatted(movies));
     htmlBuilder.append("</html>");
 
-    writer.write(htmlBuilder.toString());
+    try {
+      writer.write(htmlBuilder.toString());
+    } catch (IOException e) {
+      throw new HtmlGeneratorException("Error writing html file.", e);
+    }
   }
 
   private String getHead() {
