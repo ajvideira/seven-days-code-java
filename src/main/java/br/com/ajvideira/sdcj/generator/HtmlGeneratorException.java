@@ -1,4 +1,4 @@
-package br.com.ajvideira.sdcj;
+package br.com.ajvideira.sdcj.generator;
 
 public class HtmlGeneratorException extends Exception {
   public HtmlGeneratorException(String message, Throwable cause) {

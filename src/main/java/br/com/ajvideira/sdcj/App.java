@@ -3,6 +3,15 @@ package br.com.ajvideira.sdcj;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
+import br.com.ajvideira.sdcj.api.ApiClientException;
+import br.com.ajvideira.sdcj.api.ImdbApiClient;
+import br.com.ajvideira.sdcj.generator.HtmlGenerator;
+import br.com.ajvideira.sdcj.generator.HtmlGeneratorException;
+import br.com.ajvideira.sdcj.generator.ImdbHtmlGenerator;
+import br.com.ajvideira.sdcj.model.Movie;
+import br.com.ajvideira.sdcj.parser.JsonParser;
+import br.com.ajvideira.sdcj.parser.ImdbJsonParser;
+import br.com.ajvideira.sdcj.parser.JsonParserException;
 
 public class App {
 	
@@ -15,16 +24,15 @@ public class App {
 		String apiKey = args[0];
 
 		try (PrintWriter printWriter = new PrintWriter("index.html", Charset.forName("UTF-8"))) {
-			ImdbClient imdbClient = new ImdbClient(apiKey);
+			ImdbApiClient imdbClient = new ImdbApiClient(apiKey);
 
-			ImdbParserJson imdbParserJson = new ImdbParserJson(imdbClient.getResponseBody()); 
+			JsonParser<Movie> imdbParserJson = new ImdbJsonParser(imdbClient.getResponseBody()); 
 
-			HtmlGenerator htmlGenerator = new HtmlGenerator(printWriter);
-			htmlGenerator.generate(imdbParserJson.getMovies());	
-
-		} catch (ImdbClientException e) {
+			HtmlGenerator<Movie> htmlGenerator = new ImdbHtmlGenerator(printWriter);
+			htmlGenerator.generate(imdbParserJson.getContentList());	
+		} catch (ApiClientException e) {
 			System.out.println(e.getMessage());
-		} catch (ImdbParserJsonException e) {
+		} catch (JsonParserException e) {
 			System.out.println(e.getMessage());
 		} catch (HtmlGeneratorException e) {
 			System.out.println(e.getMessage());

@@ -1,24 +1,26 @@
-package br.com.ajvideira.sdcj;
+package br.com.ajvideira.sdcj.generator;
 
 import java.io.IOException;
 
 import java.io.Writer;
 import java.lang.StringBuilder;
 import java.util.List;
+import br.com.ajvideira.sdcj.model.Movie;
 
-public class HtmlGenerator {
+public class ImdbHtmlGenerator implements HtmlGenerator<Movie> {
   private Writer writer;
 
-  public HtmlGenerator(Writer writer) {
+  public ImdbHtmlGenerator(Writer writer) {
     this.writer = writer;
   }
 
-  public void generate(List<Movie> movies ) throws HtmlGeneratorException {
+  @Override
+  public void generate(List<Movie> contentList ) throws HtmlGeneratorException {
     StringBuilder htmlBuilder = new StringBuilder();
     htmlBuilder.append("<!DOCTYPE html>\n");
     htmlBuilder.append("<html lang=\"en\">\n");
     htmlBuilder.append(getHead());
-    htmlBuilder.append(getCardsFormatted(movies));
+    htmlBuilder.append(getCardsFormatted(contentList));
     htmlBuilder.append("</html>");
 
     try {

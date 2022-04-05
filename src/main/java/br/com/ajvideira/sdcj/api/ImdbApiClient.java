@@ -1,4 +1,4 @@
-package br.com.ajvideira.sdcj;
+package br.com.ajvideira.sdcj.api;
 
 import java.io.IOException;
 import java.net.URI;
@@ -8,18 +8,18 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 
-public class ImdbClient {
+public class ImdbApiClient implements ApiClient {
   
   public static final String IMDB_API_URL = "https://imdb-api.com/en/API";
 
   private String apiKey;
 
-  public ImdbClient(String apiKey) {
+  public ImdbApiClient(String apiKey) {
     this.apiKey = apiKey;
-    
   }
 
-  public String getResponseBody() throws ImdbClientException {
+  @Override
+  public String getResponseBody() throws ApiClientException {
     try {
       HttpClient client = HttpClient.newHttpClient();
       HttpRequest request = HttpRequest.newBuilder()
@@ -29,9 +29,9 @@ public class ImdbClient {
   
       return response.body();
     } catch (URISyntaxException e) {
-      throw new ImdbClientException("Error creating API URI.", e);
+      throw new ApiClientException("Error creating API URI.", e);
     } catch (IOException | InterruptedException e) {
-      throw new ImdbClientException("Error sending requesto to API.", e);
+      throw new ApiClientException("Error sending requesto to API.", e);
     }
   }
 
